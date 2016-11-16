@@ -12,6 +12,7 @@ import {
   REGION,
   EXISTING_ROOM_ID,
   CLIENT_ID,
+  WS_SERVER,
 } from './configs';
 
 @messageType(1)
@@ -29,6 +30,7 @@ describe('Plugin', () => {
       realtime = new Realtime({
         appId: APP_ID,
         region: REGION,
+        server:WS_SERVER,
         pushUnread: false,
         plugins: [{
           messageClasses: [PluginDefinedMessage],
@@ -77,6 +79,7 @@ describe('Plugin', () => {
       realtime = new Realtime({
         appId: APP_ID,
         region: REGION,
+        server:WS_SERVER,
         pushUnread: false,
         plugins: [{
           onRealtimeCreate: patchTestFunction(1),
@@ -119,6 +122,7 @@ describe('Plugin', () => {
       (() => new Realtime({
         appId: APP_ID,
         region: REGION,
+        server:WS_SERVER,
         pushUnread: false,
         plugins: [{
           name: 'ErrorPlugin',
@@ -132,6 +136,7 @@ describe('Plugin', () => {
       new Realtime({
         appId: APP_ID,
         region: REGION,
+        server:WS_SERVER,
         pushUnread: false,
         plugins: [{
           name: 'ErrorPlugin',
@@ -145,6 +150,7 @@ describe('Plugin', () => {
       new Realtime({
         appId: APP_ID,
         region: REGION,
+        server:WS_SERVER,
         pushUnread: false,
         plugins: [{
           name: 'ErrorPlugin',
@@ -161,6 +167,7 @@ describe('Plugin', () => {
         new Realtime({
           appId: APP_ID,
           region: REGION,
+          server:WS_SERVER,
           pushUnread: false,
           plugins: [{
             name: 'ErrorPlugin',
@@ -170,6 +177,7 @@ describe('Plugin', () => {
         new Realtime({
           appId: APP_ID,
           region: REGION,
+          server:WS_SERVER,
           pushUnread: false,
           plugins: [{
             name: 'ErrorPlugin',

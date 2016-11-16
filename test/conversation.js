@@ -1,3 +1,6 @@
+import 'should';
+import 'should-sinon';
+import should from 'should/as-function';
 import uuid from 'uuid';
 import Realtime from '../src/realtime';
 import { Message, TextMessage, MessageStatus, OnlineStatus } from '../src';
@@ -13,6 +16,7 @@ import {
   EXISTING_ROOM_ID,
   SYS_CONV_ID,
   CLIENT_ID,
+  WS_SERVER,
 } from './configs';
 
 import { listen, sinon } from './test-utils';
@@ -25,6 +29,7 @@ describe('Conversation', () => {
     realtime = new Realtime({
       appId: APP_ID,
       region: REGION,
+      server:WS_SERVER,
     });
     return realtime.createIMClient(CLIENT_ID)
       .then((c) => {
@@ -371,10 +376,11 @@ describe('Conversation', () => {
   });
 
   it('unreadmessages event and markAsRead', () => {
-    const bwangId = uuid.v4();
+    //const bwangId = uuid.v4();
+    const bwangId = 'bwangId';
     let bwang0;
     let conversationId;
-    const message = new Message({});
+    const message = new Message("last msg_id");
     return realtime.createIMClient()
       .then(jwu =>
         jwu.createConversation({
@@ -392,6 +398,7 @@ describe('Conversation', () => {
         new Realtime({
           appId: APP_ID,
           region: REGION,
+          server:WS_SERVER,
         }).createIMClient(bwangId)
       ).then((c) => {
         bwang0 = c;
@@ -423,7 +430,46 @@ describe('Conversation', () => {
       });
   });
 
-  it('online status', () => {
+  it.skip('online status by tr', () => {
+    //const jfengId = uuid.v4();
+    const jfengId = 'jfengId';
+    let conversationId;
+    return realtime.createIMClient(jfengId).then(jfeng =>
+      jfeng.createConversation({
+        members: [CLIENT_ID],
+      }).then((conv) => {
+        conversationId = conv.id;
+        return conv.updateOnlineStatusPolicy({
+          pub: true,
+          sub: true,
+        });
+      }).then(() =>
+        client.getConversation(conversationId).then(conv =>
+          conv.updateOnlineStatusPolicy({
+            sub: true,
+          }).then(() =>
+            listen(conv, 'membersstatuschange')
+          ).then(([{ members, status }]) => {
+            members.should.eql([jfengId]);
+            status.should.eql(OnlineStatus.ONLINE);
+            jfeng.close();
+            return listen(conv, 'membersstatuschange');
+          }).then(([{ members, status }]) => {
+            members.should.eql([jfengId]);
+            status.should.eql(OnlineStatus.OFFLINE);
+            realtime.createIMClient(jfengId);
+            return listen(conv, 'membersstatuschange');
+          }).then(([{ members, status }]) => {
+            members.should.eql([jfengId]);
+            status.should.eql(OnlineStatus.ONLINE);
+            return jfeng.close();
+          })
+        )
+      )
+    );
+  });
+
+  it.skip('online status', () => {
     const jfengId = uuid.v4();
     let conversationId;
     return realtime.createIMClient(jfengId).then(jfeng =>

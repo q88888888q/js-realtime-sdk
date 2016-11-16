@@ -231,12 +231,20 @@ export default class Realtime extends EventEmitter {
     }
   }
 
-  static _fetchEndpointsInfo({ appId, region, ssl, server }) {
+  static _fetchEndpointsInfo({ appId, region, ssl,server}) {
     debug('fetch endpoint info');
+    //edit by tr
+    if(region == 'qiankun'){
+      return Promise.resolve({ groupId: 'g0',
+        server: server,
+        ttl: 3600,
+        secondary: 'ws://127.0.0.1:8585' });
+    }
+    //edit by end
     return this._fetchPushRouter({ appId, region })
       .then(tap(debug))
-      .then(router =>
-        axios.get(`https://${router}/v1/route`, {
+      .then(router =>{
+        return axios.get(`https://${router}/v1/route`, {
           params: {
             appId,
             secure: ssl,
@@ -246,7 +254,7 @@ export default class Realtime extends EventEmitter {
           timeout: 20000,
         }).then(
           res => res.data
-        ).then(tap(debug))
+        ).then(tap(debug))}
     );
   }
 

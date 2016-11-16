@@ -1,11 +1,14 @@
 import ConversationQuery from '../src/conversation-query';
 import Realtime from '../src/realtime';
 import Message, { MessageStatus } from '../src/messages/message';
-
+import 'should';
+import 'should-sinon';
+import should from 'should/as-function';
 import {
   APP_ID,
   REGION,
   EXISTING_ROOM_ID,
+  WS_SERVER,
 } from './configs';
 
 import { sinon } from './test-utils';
@@ -18,6 +21,7 @@ describe('ConversationQuery', () => {
       new Realtime({
         appId: APP_ID,
         region: REGION,
+        server:WS_SERVER,
         pushUnread: false,
       })
         .createIMClient()
@@ -176,6 +180,7 @@ describe('ConversationQuery', () => {
       new Realtime({
         appId: APP_ID,
         region: REGION,
+        server:WS_SERVER,
         pushUnread: false,
       })
         .createIMClient()

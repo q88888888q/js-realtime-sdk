@@ -13,6 +13,7 @@ import {
   APP_ID,
   REGION,
   EXISTING_ROOM_ID,
+  WS_SERVER,
 } from './configs';
 
 @messageType(1)
@@ -127,11 +128,12 @@ describe('Messages', () => {
       const realtime = new Realtime({
         appId: APP_ID,
         region: REGION,
+        server:WS_SERVER,
         pushUnread: false,
       });
       return Promise.all([
-        realtime.createIMClient(),
-        realtime.createIMClient(),
+        realtime.createIMClient('Wchen'),
+        realtime.createIMClient('Zwang'),
       ]).then((clients) => {
         [wchen, zwang] = clients;
         return wchen.createConversation({
@@ -150,7 +152,7 @@ describe('Messages', () => {
       wchen.close(),
       zwang.close(),
     ]));
-
+    //it.only("just for connect",() => true);
     it('sending message', () => {
       const message = new Message('hello');
       const promise = Promise.all([
@@ -164,7 +166,7 @@ describe('Messages', () => {
           sentMessage,
         ] = messages;
         sentMessage.status.should.eql(MessageStatus.SENT);
-        receivedMessage.id.should.eql(sentMessage.id);
+         receivedMessage.id.should.eql(sentMessage.id);
         receivedMessage.content.should.eql(sentMessage.content);
         receivedMessage.status.should.eql(MessageStatus.SENT);
         clientReceivedMessage.id.should.eql(sentMessage.id);

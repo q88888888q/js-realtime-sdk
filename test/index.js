@@ -6,4 +6,4 @@ import './conversation';
 import './conversation-query';
 import './messages';
 import './plugin';
-import './websocket-plus';
+//import './websocket-plus';

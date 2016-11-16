@@ -12,15 +12,16 @@ import { listen, sinon } from './test-utils';
 import {
   APP_ID,
   REGION,
+  WS_SERVER,
   NON_EXISTING_ROOM_ID,
 } from './configs';
 
 const createRealtime = options => new Realtime(Object.assign({
   appId: APP_ID,
   region: REGION,
+  server:WS_SERVER,
   pushUnread: false,
 }, options));
-
 describe('Realtime', () => {
   describe('constructor', () => {
     it('appId required', () =>
@@ -171,6 +172,14 @@ describe('Realtime', () => {
 describe('Connection', () => {
   let client;
   let connection;
+  /*
+  sinon.stub(Realtime, '_fetchEndpointsInfo').returns(
+    Promise.resolve({ groupId: 'g0',
+    server: 'ws://127.0.0.1:8585',
+    ttl: 3600,
+    secondary: 'ws://127.0.0.1:8585' })
+  );
+  */
   before(() =>
     createRealtime().createIMClient()
       .then((c) => {
@@ -180,7 +189,6 @@ describe('Connection', () => {
       })
   );
   after(() => connection.close());
-
   it('ping', () =>
     connection.ping()
       .then((resCommand) => {

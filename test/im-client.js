@@ -15,8 +15,8 @@ import {
   EXISTING_ROOM_ID,
   NON_EXISTING_ROOM_ID,
   CLIENT_ID,
+  WS_SERVER
 } from './configs';
-
 describe('IMClient', () => {
   let client;
   let realtime;
@@ -24,6 +24,7 @@ describe('IMClient', () => {
     realtime = new Realtime({
       appId: APP_ID,
       region: REGION,
+      server:WS_SERVER,
       pushUnread: false,
     });
     return realtime
@@ -38,6 +39,7 @@ describe('IMClient', () => {
       const rt = new Realtime({
         appId: APP_ID,
         region: REGION,
+        server:WS_SERVER,
         pushUnread: false,
       });
       const closeCallback = sinon.spy();
@@ -87,7 +89,6 @@ describe('IMClient', () => {
           });
       });
     });
-
     it('with tag', (done) => {
       const ID = 'conflict-test-client';
       realtime.createIMClient(ID, undefined, 'TEST')
@@ -97,6 +98,7 @@ describe('IMClient', () => {
             appId: APP_ID,
             region: REGION,
             pushUnread: false,
+            server:WS_SERVER,
           }).createIMClient(ID, undefined, 'TEST')
             .then(client2 => client2.close());
         }).catch(done);
@@ -138,6 +140,7 @@ describe('IMClient', () => {
     );
     it('should match one conversation', () =>
       client.getConversation(EXISTING_ROOM_ID).then((conversation) => {
+        should(conversation).not.be.null();
         conversation.should.be.instanceof(Conversation);
         conversation.id.should.be.equal(EXISTING_ROOM_ID);
         conversation.createdAt.should.be.a.Date();
@@ -145,6 +148,7 @@ describe('IMClient', () => {
         conversation.lastMessageAt.should.be.a.Date();
       })
     );
+
     it('should always return the same conversation instance', () => {
       let anonymousClientConversatoin;
       let originConversation;

@@ -6,7 +6,7 @@ import { trim } from './utils';
 
 const debug = d('LC:Connection');
 
-const COMMAND_TIMEOUT = 20000;
+const COMMAND_TIMEOUT = 2000000;
 
 export default class Connection extends WebSocketPlus {
   constructor(getUrl, { format, version }) {
@@ -17,7 +17,6 @@ export default class Connection extends WebSocketPlus {
     this._commands = {};
     this._serialId = 0;
   }
-
   send(command, waitingForRespond = true) {
     let serialId;
     if (waitingForRespond) {
@@ -52,6 +51,7 @@ export default class Connection extends WebSocketPlus {
       setTimeout(
         () => {
           if (this._commands[serialId]) {
+            console.error(command.peerId,'cmd:'+command.cmd,'op:'+command.op,serialId+":======== time out");
             debug('✗', trim(command), 'timeout');
             reject(new Error('Command Timeout.'));
             delete this._commands[serialId];
@@ -86,7 +86,7 @@ export default class Connection extends WebSocketPlus {
         delete this._commands[serialId];
       } else {
         console.warn(`Unexpected command received with serialId [${serialId}],
-         which have timed out or never been requested.`);
+         which have timed out or never been requested.cmd:${message.cmd} op:${message.op} peerId:${message.peerId}`);
       }
     } else if (message.cmd === CommandType.error) {
       this.emit('error', createError(message.errorMessage));
