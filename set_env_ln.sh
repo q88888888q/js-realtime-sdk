@@ -1,0 +1,7 @@
+export APP_ID=3KKpMn9xcPPskv2Qswywc8XX-gzGzoHsz
+export APP_KEY=XCgjcUeL8EU8LwuWRVGlaeSk
+export REGION=cn
+export EXISTING_ROOM_ID=580724a80bd1d0005826a02d
+export SYS_CONV_ID=57f9f944a0bb9f005835f082
+export CLIENT_ID=leeyeh
+export WS_SERVER=
