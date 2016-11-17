@@ -48,15 +48,14 @@ describe('IMClient', () => {
   after(() => realtime._close());
   describe('create and close', () => {
     it('normal create and close', () => {
-      // var cid = '58131e468ac247004fa91d41';//ln
-    var cid = '58079dbf9b1eaf34284a52b7'; //qiankun
+      //var cid = '58131e468ac247004fa91d41';//ln
+      var cid = '582139d5128fe1005a16058d';//ln
+      //var cid = '58079dbf9b1eaf34284a52b7'; //qiankun]
       return client.getConversation(cid).then(leeyehC =>
       {
-        return leeyehC.join().then(c=>
-          c.markAsRead().then(function(c2){
-            console.log(c2);
-          })
-        );
+        return leeyehC.send(new TextMessage("hi")).then(function(res){
+          console.log(res);
+        });
         //主动加入
         /*
         return leeyehC.join().then(leeyehC.add(['wangtr','chensf'])).then((c)=>{
