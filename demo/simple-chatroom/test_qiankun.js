@@ -28,6 +28,7 @@ var sendBtn = document.getElementById('send-btn');
 var inputName = document.getElementById('input-name');
 var inputSend = document.getElementById('input-send');
 var printWall = document.getElementById('print-wall');
+var inputServer = document.getElementById('input-server');
 
 // 拉取历史相关
 // 最早一条消息的时间戳
@@ -48,8 +49,13 @@ bindEvent(document.body, 'keydown', function(e) {
 });
 
 function main() {
-  showLog('正在连接服务器，请等待。。。');
   var val = inputName.value;
+  var server = inputServer.value;
+  if(!server){
+	  alert("请输入服务器地址");
+	return ; 
+  }
+  showLog('正在连接服务器，请等待。。。');
   if (val) {
     clientId = val;
   }
@@ -61,7 +67,7 @@ function main() {
     appId: appId,
     appKey: appKey,
     region:'qiankun',
-	  server:'ws://10.20.16.80:8585',
+	  server:server,
     plugins: AV.TypedMessagesPlugin,
   });
   // 创建聊天客户端
