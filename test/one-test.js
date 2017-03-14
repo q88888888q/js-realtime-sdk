@@ -1,7 +1,4 @@
 import { default as d } from 'debug';
-import 'should';
-import 'should-sinon';
-import should from 'should/as-function';
 import Realtime from '../src/realtime';
 import IMClient from '../src/im-client';
 import Conversation from '../src/conversation';
@@ -10,7 +7,6 @@ import TypedMessage from '../src/messages/typed-message';
 import TextMessage from '../src/messages/text-message';
 import { messageType, messageField, IE10Compatible } from '../src/messages/helpers';
 import { internal } from '../src/utils';
-import { sinon, listen } from './test-utils';
 const debug = d('LC:Test');
 import {
   APP_ID,
@@ -30,42 +26,33 @@ class CustomMessage extends TypedMessage {
   }
 }
 
-describe('IMClient', () => {
-  let client;
-  let realtime;
-  before(() => {
-    realtime = new Realtime({
-      appId: APP_ID,
-      region: REGION,
-      server:WS_SERVER,
-      pushUnread: false,
-    });
-    return realtime
-      .createIMClient(CLIENT_ID)
-      .then(c => (client = c));
-  });
+function getNowFormatDate() {
+  var date = new Date();
+  var seperator1 = "-";
+  var seperator2 = ":";
+  var month = date.getMonth() + 1;
+  var strDate = date.getDate();
+  if (month >= 1 && month <= 9) {
+    month = "0" + month;
+  }
+  if (strDate >= 0 && strDate <= 9) {
+    strDate = "0" + strDate;
+  }
+  var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate
+    + " " + date.getHours() + seperator2 + date.getMinutes()
+    + seperator2 + date.getSeconds();
+  return currentdate;
+}
 
-  after(() => realtime._close());
-  describe('create and close', () => {
-    it('normal create and close', () => {
-      //var cid = '58131e468ac247004fa91d41';//ln
-      var cid = '582139d5128fe1005a16058d';//ln
-      //var cid = '58079dbf9b1eaf34284a52b7'; //qiankun]
-      return client.getConversation(cid).then(leeyehC =>
-      {
-        return leeyehC.send(new TextMessage("hi")).then(function(res){
-          console.log(res);
-        });
-        //主动加入
-        /*
-        return leeyehC.join().then(leeyehC.add(['wangtr','chensf'])).then((c)=>{
-          return listen(client, 'membersjoined').then(([payload, conv]) => {
-            debug(payload);
-          });
-        });
-        */
-      }
-      ) ;
-    });
+let cfg = {
+  appId: APP_ID,
+  region: REGION,
+  server:WS_SERVER,
+  pushUnread: false,
+};
+new Realtime(cfg).createIMClient('test_wangtr').then(client => {
+  console.log("created ok");
+  client.on('message',function(msg){
+    console.log('onMessage',msg.getAttributes());
   });
 });

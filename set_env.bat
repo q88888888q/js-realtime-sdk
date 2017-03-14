@@ -7,3 +7,5 @@ set DEBUG=
 set CLIENT_ID=leeyeh
 rem set WS_SERVER=ws:10.20.16.80:8585
 set WS_SERVER=ws:10.30.0.15:8585
+set test_client_num=10
+set test_msg_num=1

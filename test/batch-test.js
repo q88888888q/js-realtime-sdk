@@ -25,6 +25,25 @@ class CustomMessage extends TypedMessage {
     this.foo = foo;
   }
 }
+
+function getNowFormatDate() {
+  var date = new Date();
+  var seperator1 = "-";
+  var seperator2 = ":";
+  var month = date.getMonth() + 1;
+  var strDate = date.getDate();
+  if (month >= 1 && month <= 9) {
+    month = "0" + month;
+  }
+  if (strDate >= 0 && strDate <= 9) {
+    strDate = "0" + strDate;
+  }
+  var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate
+    + " " + date.getHours() + seperator2 + date.getMinutes()
+    + seperator2 + date.getSeconds();
+  return currentdate;
+}
+
 let cfg = {
   appId: APP_ID,
   region: REGION,
@@ -66,12 +85,18 @@ const batchCreateClients = function(allnum){
       })(i);
       new Realtime(cfg).createIMClient('test_' + (set_begin_num++)).then(client => {
         client.on('message', function (message, conversation) {
+          if(msg_recv == 0 ){
+            step_startTime = new Date().getTime();//起始时间
+            step_startTimeFormat = getNowFormatDate();
+            console.log(step_startTimeFormat,"start:"+msg_recv);
+          }
           msg_recv ++;
-          //console.log(msg_recv,client.id + ' received message from ' + message.from + ':' + message.text);
+          //console.log(getNowFormatDate()+':',msg_recv,client.id + ' received message from ' + message.from + ':' + message.text);
           //全部消息接收完
-          if(msg_recv >= allnum *test_msg_num*(allnum-1)) {
+          //if(msg_recv >= allnum *sendCount*(allnum-1)) {
+          if(msg_recv >= sendCount*allnum) {
             var end = new Date().getTime();//起始时间
-            console.log("finished all message received:" + msg_recv+" runtime:"+(end-step_startTime)+" ms");
+            console.log(getNowFormatDate(),"finished received:" + msg_recv+" runtime:"+(end-step_startTime)+" ms",message.from + ':' + message.text);
             msg_recv = 0;
           }
         });
@@ -143,10 +168,11 @@ const batchSendConv = function(convs){
 };
 
 var step_startTime = startTime;//起始时间
+var step_startTimeFormat = getNowFormatDate();
 var step = batchCreateClients(allnum).then((allnum)=>{
   var endTime =  new Date().getTime();//起始时间
   step_startTime = endTime;
-  console.log('finished batchCreateClients',' all num:'+allnum,'runtime:'+(endTime-startTime)+' ms ');
+  console.log(getNowFormatDate(),'finished batchCreateClients',' all num:'+allnum,'runtime:'+(endTime-startTime)+' ms ');
   return allnum;
 }).catch(function(err){
   console.error(err);
@@ -180,13 +206,16 @@ if(test_msg_num>0) {
 else {
   //发送一个新的记录
   step = step.then(()=>{
-    clients[0].getConversation(cid).then(conv=>{
+    var client = new Realtime(cfg).createIMClient("chensf");
+    return client;
+  }).then((client)=>{
+    client.getConversation(cid).then(conv=>{
       return conv.join()
     }).then(conv=>{
       function sendMsg(conv){
-        console.log("start send:",(sendCount++));
+        step_startTime = new Date().getTime();//起始时间
+        console.log(getNowFormatDate(),"start send:",(sendCount++));
         conv.send(new TextMessage("hello:"+sendCount)).then(()=>{
-          step_startTime = new Date().getTime();//起始时间
           //sendMsg(conv);
         });
       }

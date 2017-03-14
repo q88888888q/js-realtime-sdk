@@ -4,7 +4,7 @@ var appKey = 'nhqqc1x7r7r89kp8pggrme57i374h3vyd0ukr2z3ayojpvf4';
 AV.initialize(appId, appKey);
 // 请换成你自己的一个房间的 conversation id（这是服务器端生成的）
 //var roomId = '5816db909b1eaf7728f01129';
-var roomId = '582188f69b1eaf3620efcabf'; 
+var roomId = '5879d4e2ecfe4b29008b456b';
 
 // 每个客户端自定义的 id
 var clientId = 'LeanCloud';
@@ -101,8 +101,8 @@ function main() {
           test: 'demo2'
         }
       }).then(function(conversation) {
-        showLog('创建新 Room 成功，id 是：', roomId);
         roomId = conversation.id;
+        showLog('创建新 Room 成功，id 是：', roomId);
         return conversation;
       });
     }
