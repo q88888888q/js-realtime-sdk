@@ -52,7 +52,24 @@ let cfg = {
 };
 new Realtime(cfg).createIMClient('test_wangtr').then(client => {
   console.log("created ok");
-  client.on('message',function(msg){
-    console.log('onMessage',msg.getAttributes());
+  client.on('disconnect',function(msg){
+    console.log('disconnect','disconnect-----------------------');
+  });
+  client.on('reconnect',function(msg){
+    console.log('reconnect','reconnect-----------------------');
+  });
+
+  var connection = client._connection;
+  connection.ping().then((resCommand) => {
+   console.log('ping:',resCommand);
+  });
+
+  client.getConversation(EXISTING_ROOM_ID).then(function(conv){
+    conv.join();
+    conv.on('message',function(msg){
+      console.log('conv message',msg);
+    });
+
+
   });
 });

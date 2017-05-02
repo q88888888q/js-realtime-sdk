@@ -1,0 +1,7 @@
+set APP_ID=rGngnUit9fqERRVjQMfzQhWg-gzGzoHsz
+SET APP_KEY=xWQ3c4CoLPXIlRd6UxLRGndX
+SET REGION=qiankun
+set EXISTING_ROOM_ID=58df515a1502f1000dc30a61
+set SYS_CONV_ID=5837c29561ff4b006b412c2d
+set CLIENT_ID=leeyeh
+set WS_SERVER=ws://rtm.qkdxt.com

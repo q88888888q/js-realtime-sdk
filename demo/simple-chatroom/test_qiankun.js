@@ -80,7 +80,13 @@ function main() {
       showLog('服务器正在重连，请耐心等待。。。');
     });
     // 获取对话
-    return c.getConversation(roomId);
+    //return c.getConversation(roomId);
+    return c.getQuery().equalTo('name','LeanCloud-Conversation').find().then(function(res){
+      if(!res){
+        return null;
+      }
+      return res[0];
+    });
   })
   .then(function(conversation) {
     if (conversation) {
@@ -152,7 +158,16 @@ function sendMsg() {
   }
 
   // 向这个房间发送消息，这段代码是兼容多终端格式的，包括 iOS、Android、Window Phone
-  room.send(new AV.TextMessage(val)).then(function(message) {
+  //判断是否特殊格式
+  var msg = new AV.TextMessage(val);
+  if(val.indexOf('{')===0){
+    var msgData = JSON.parse(val);
+    console.log(msgData);
+    if(msgData) {
+      msg.setAttributes(msgData);
+    }
+  }
+  room.send(msg).then(function(message) {
     // 发送成功之后的回调
     inputSend.value = '';
     showLog('（' + formatTime(message.timestamp) + '）  自己： ', encodeHTML(message.text));
